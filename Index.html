@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁A small gift🎁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#2E1A2C;
+    --bg-2:#4A2C3D;
+    --cream:#FBEAE3;
+    --coral:#FF8C69;
+    --gold:#F4C95D;
+    --ink:#2A1620;
+  }
+
+  /* ======== CHỈNH NỘI DUNG Ở ĐÂY ======== */
+  /* Đổi tên, lời nhắn, câu hỏi tùy ý bạn */
+  /* ======================================= */
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html,body{
+    min-height:100vh;
+    font-family:'Quicksand', sans-serif;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,140,105,0.18), transparent 40%),
+      radial-gradient(circle at 80% 75%, rgba(244,201,93,0.15), transparent 45%),
+      linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    color:var(--cream);
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* ambient hearts */
+  .heart-field{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .floaty{
+    position:absolute;
+    bottom:-10%;
+    font-size:1.4rem;
+    opacity:0.35;
+    animation:rise linear infinite;
+    color:var(--coral);
+  }
+  @keyframes rise{
+    to{ transform:translateY(-120vh) translateX(var(--drift,0)); opacity:0; }
+  }
+
+  .stage{
+    position:relative;
+    z-index:1;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .card{
+    width:100%;
+    max-width:480px;
+    text-align:center;
+    padding:40px 28px 36px;
+    border-radius:28px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(6px);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
+    transition:transform .35s ease, opacity .35s ease;
+  }
+
+  .stamp{
+    display:inline-block;
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:6px 14px;
+    border:1.5px dashed var(--gold);
+    border-radius:999px;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.6rem, 5vw, 2.3rem);
+    line-height:1.25;
+    margin-bottom:14px;
+  }
+
+  .note{
+    font-family:'Caveat', cursive;
+    font-size:1.5rem;
+    color:var(--coral);
+    line-height:1.4;
+    margin-bottom:26px;
+  }
+
+  .question{
+    font-size:1.05rem;
+    font-weight:600;
+    margin-bottom:30px;
+    color:var(--cream);
+  }
+
+  .choices{
+    position:relative;
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    min-height:120px;
+  }
+
+  button{
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+
+  #yesBtn{
+    padding:16px 34px;
+    background:linear-gradient(135deg, var(--coral), var(--gold));
+    color:var(--ink);
+    box-shadow:0 12px 24px -8px rgba(255,140,105,0.55);
+  }
+  #yesBtn:hover{ transform:translateY(-2px) scale(1.03); }
+  #yesBtn:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+  #yesBtn:active{ transform:scale(0.97); }
+
+  #noBtn{
+    padding:14px 28px;
+    background:rgba(255,255,255,0.08);
+    color:var(--cream);
+    border:1px solid rgba(255,255,255,0.25);
+    position:absolute;
+  }
+  #noBtn:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+
+  .taunt{
+    margin-top:14px;
+    font-size:0.85rem;
+    color:rgba(251,234,227,0.7);
+    min-height:18px;
+  }
+
+  /* ===== Celebration screen ===== */
+  .celebrate{
+    display:none;
+    text-align:center;
+  }
+  .celebrate.show{ display:block; }
+  .card.success{ animation:pop .4s ease; }
+  @keyframes pop{
+    0%{ transform:scale(0.85); opacity:0; }
+    100%{ transform:scale(1); opacity:1; }
+  }
+
+  .seal{
+    display:inline-block;
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:0.95rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border:3px solid var(--gold);
+    border-radius:12px;
+    padding:8px 18px;
+    transform:rotate(-8deg);
+    margin-bottom:18px;
+  }
+
+  .celebrate h1{ margin-bottom:10px; }
+  .celebrate p{
+    font-family:'Caveat', cursive;
+    font-size:1.6rem;
+    color:var(--coral);
+    margin-bottom:24px;
+  }
+
+  .resetLink{
+    background:none;
+    border:none;
+    color:rgba(251,234,227,0.55);
+    font-size:0.85rem;
+    text-decoration:underline;
+    cursor:pointer;
+  }
+
+  .confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:2;
+  }
+  .confetti span{
+    position:absolute;
+    top:-10%;
+    font-size:1.3rem;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) rotate(360deg); opacity:0.2; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .floaty, .confetti span{ animation:none !important; display:none; }
+    button{ transition:none; }
+  }
+
+  @media (max-width:380px){
+    .card{ padding:30px 20px 28px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="heart-field" id="heartField"></div>
+
+  <div class="stage">
+    <div class="card" id="card">
+
+      <div id="askScreen">
+        <span class="stamp">🎁Có bất ngờ nè🎁 </span>
+        <h1>ÊY FEN</h1>
+        <p class="note" id="noteText">mình với fen chơi với nhau cũng lâu roi á fen</p>
+        <p class="question" id="questionText">Fen đồng ý làm ny tui nha fennnn🩷💖</p>
+
+        <div class="choices" id="choices">
+          <button id="yesBtn">Có 💕</button>
+          <button id="noBtn">Không</button>
+        </div>
+        <p class="taunt" id="taunt">&nbsp;</p>
+      </div>
+
+      <div class="celebrate" id="celebrateScreen">
+        <span class="seal">Đã thành công 💍</span>
+        <h1>Yayyy! 🎉</h1>
+        <p>Từ hôm nay fen là của tui </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+<script>
+  // ====== Có thể chỉnh nội dung ở đây ======
+  const taunts = [
+    "Né đi đâu được 😏",
+    "Không click được đâu, thử lại nha 😆",
+    "Bạn chắc chưa đó? 👀",
+    "Suy nghĩ lại đi mà...",
+    "Nút này nó nhát người lạ lắm 🙈",
+    "Thôi mà, bấm Có đi 🥺"
+  ];
+  // ==========================================
+
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const choices = document.getElementById('choices');
+  const taunt = document.getElementById('taunt');
+  const card = document.getElementById('card');
+  const askScreen = document.getElementById('askScreen');
+  const celebrateScreen = document.getElementById('celebrateScreen');
+  const resetBtn = document.getElementById('resetBtn');
+  const confettiBox = document.getElementById('confetti');
+
+  let dodgeCount = 0;
+  let yesScale = 1;
+
+  function moveNoButton(){
+    const bounds = choices.getBoundingClientRect();
+    const btnW = noBtn.offsetWidth || 110;
+    const btnH = noBtn.offsetHeight || 44;
+
+    const maxX = Math.max(bounds.width - btnW, 0);
+    const maxY = Math.max(bounds.height - btnH, 0);
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
+
+    dodgeCount++;
+    taunt.textContent = taunts[Math.min(dodgeCount - 1, taunts.length - 1)];
+
+    // Nút Có lớn dần lên một chút cho vui
+    yesScale = Math.min(1 + dodgeCount * 0.04, 1.5);
+    yesBtn.style.transform = `scale(${yesScale})`;
+  }
+
+  // né khi rê chuột tới gần (desktop) và khi chạm/click (mobile)
+  noBtn.addEventListener('mouseenter', moveNoButton);
+  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
+  noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNoButton(); });
+  noBtn.addEventListener('focus', moveNoButton);
+
+  function spawnConfetti(){
+    const emojis = ['💕','🎉','✨','💌','🌷','💍'];
+    for(let i = 0; i < 40; i++){
+      const s = document.createElement('span');
+      s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      s.style.left = Math.random() * 100 + '%';
+      s.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      s.style.animationDelay = (Math.random() * 1.2) + 's';
+      confettiBox.appendChild(s);
+      setTimeout(() => s.remove(), 5000);
+    }
+  }
+
+  yesBtn.addEventListener('click', () => {
+    askScreen.style.display = 'none';
+    celebrateScreen.classList.add('show');
+    card.classList.add('success');
+    spawnConfetti();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    celebrateScreen.classList.remove('show');
+    card.classList.remove('success');
+    askScreen.style.display = 'block';
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+    noBtn.style.position = 'static';
+    setTimeout(() => { noBtn.style.position = 'absolute'; }, 50);
+    dodgeCount = 0;
+    yesBtn.style.transform = 'scale(1)';
+    taunt.textContent = '\u00A0';
+  });
+
+  // ambient floating hearts
+  const heartField = document.getElementById('heartField');
+  const symbols = ['💗','💕','✨','🌸'];
+  for(let i = 0; i < 18; i++){
+    const el = document.createElement('div');
+    el.className = 'floaty';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    el.style.animationDuration = (8 + Math.random() * 10) + 's';
+    el.style.animationDelay = (Math.random() * 10) + 's';
+    el.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+    heartField.appendChild(el);
+  }
+</script>
+
+</body>
+</html>
